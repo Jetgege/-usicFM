@@ -17,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="ocG-yB-K5F">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="timeBg" translatesAutoresizingMaskIntoConstraints="NO" id="ocG-yB-K5F">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="thumb" translatesAutoresizingMaskIntoConstraints="NO" id="uqi-Ra-8av" customClass="JETImage" customModule="DBFM" customModuleProvider="target">
@@ -303,7 +303,6 @@
     </scenes>
     <resources>
         <image name="channel" width="40" height="40"/>
-        <image name="logo" width="200" height="200"/>
         <image name="next" width="40" height="40"/>
         <image name="order1" width="40" height="40"/>
         <image name="pause" width="40" height="40"/>
