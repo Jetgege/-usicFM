@@ -7,9 +7,11 @@
 //
 
 import UIKit
+
 protocol ChannelViewDelegate{
     func getChannelId(channel_id:String)
 }
+
 class ChannelViewController: UIViewController {
     @IBOutlet weak var channelTableView: UITableView!
 

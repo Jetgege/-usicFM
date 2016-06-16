@@ -19,6 +19,7 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
     @IBOutlet weak var playModeBtn: OrderButton!
       /// 播放控制按钮
     @IBOutlet weak var playBotton: UIButton!
+    
     @IBOutlet weak var tvTableView: UITableView!
     @IBOutlet weak var bgImageView: UIImageView!
     @IBOutlet weak var rotaImageView: JETImage!
@@ -28,8 +29,7 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
     var isplay:Bool = false
     var dataChannel = [NSDictionary]()
     var dataSong = [NSDictionary]()
-    //缓存图片
-    var imageDatas = [String:UIImage]()
+
     //创建网络操作类
     let eHttp = HTTPController()
     /// 播放时间
@@ -48,39 +48,41 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
         setUP()
     }
 
-    func onSetAudio(urlStr:String) {
+ 
+    // MARK: - 内部方法
+  private  func onSetAudio(urlStr:String) {
         guard let url = NSURL(string:urlStr) else{
             return
         }
         let item = AVPlayerItem(URL: url)
-      
+        
         if avPlayer == nil {
-           
+            
             avPlayer = AVPlayer(playerItem: item)
             let avlayer = AVPlayerLayer(player: avPlayer)
             avlayer.frame = self.view.bounds
             self.view.layer.addSublayer(avlayer)
         }
-       avPlayer?.replaceCurrentItemWithPlayerItem(item)
-       avPlayer!.play()
+        avPlayer?.replaceCurrentItemWithPlayerItem(item)
+        avPlayer!.play()
         autoPalyStop = true
         playBotton.setImage(UIImage(named: "pause"), forState: UIControlState.Normal)
         timer?.invalidate()
         timerLabel.text = "00:00"
         timer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(ViewController.upDataTime), userInfo:nil, repeats: true)
         
- }
-   
-   @objc func upDataTime(){
+    }
     
+  @objc private  func upDataTime(){
+        
         let cmTimes = avPlayer?.currentTime()
-    
+        
         if cmTimes?.value > 0 {
             let times = Int64((cmTimes?.value)!) / Int64((cmTimes?.timescale)!)
             let ss = times % 60
             let mm = times / 60
             let mmTime:String!
-             let ssTime:String!
+            let ssTime:String!
             if mm < 10 {
                 mmTime = "0\(mm)"
             }else{
@@ -96,7 +98,7 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
             if avPlayer?.status == AVPlayerStatus.ReadyToPlay {
                 let Times =  avPlayer?.currentItem?.duration
                 
-              let allTime = Int64((Times!.value)) / Int64((Times!.timescale))
+                let allTime = Int64((Times!.value)) / Int64((Times!.timescale))
                 
                 let pro = CGFloat(times) / CGFloat(allTime)
                 let width = UIScreen.mainScreen().bounds.size.width*CGFloat(pro)
@@ -105,8 +107,8 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
             
         }
     }
-    // MARK: - 内部方法
-    func setUP(){
+  
+  private func setUP(){
         //１.设置旋转效果
         rotaImageView.startRotation()
         //２.设置背景图片的模糊效果
@@ -136,7 +138,7 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
 
     }
     
-    func playFinished(){
+   func playFinished(){
        if autoPalyStop {
         
             switch playModeBtn.order {
@@ -211,17 +213,9 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
     }
    
     //缓存图片
-    func getImageCache(url:String,imageView:UIImageView){
-       
-        if let image = imageDatas[url] as UIImage?{
-            imageView.image = image
-        }else{
-            
-            imageView.sd_setImageWithURL(NSURL(string: url))
-            imageDatas[url] = imageView.image
-
-        }
-        
+   private func getImageCache(url:String,imageView:UIImageView){
+   
+        imageView.sd_setImageWithURL(NSURL(string: url))
     }
     //
     func didRecieveResult(result: AnyObject) {
