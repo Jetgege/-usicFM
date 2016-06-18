@@ -25,6 +25,7 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
     @IBOutlet weak var rotaImageView: JETImage!
     
     @IBOutlet weak var progressView: UIImageView!
+    
     var avPlayer:AVPlayer?
     var isplay:Bool = false
     var dataChannel = [NSDictionary]()
@@ -48,9 +49,9 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
         setUP()
     }
 
- 
+
     // MARK: - 内部方法
-  private  func onSetAudio(urlStr:String) {
+    private  func onSetAudio(urlStr:String) {
         guard let url = NSURL(string:urlStr) else{
             return
         }
@@ -73,7 +74,8 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
         
     }
     
-  @objc private  func upDataTime(){
+    /**刷新时间，刷新进度条 */
+    @objc private  func upDataTime(){
         
         let cmTimes = avPlayer?.currentTime()
         
@@ -107,8 +109,8 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
             
         }
     }
-  
-  private func setUP(){
+    
+    private func setUP(){
         //１.设置旋转效果
         rotaImageView.startRotation()
         //２.设置背景图片的模糊效果
@@ -119,12 +121,12 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
         blurView.frame.size = view.frame.size
         //2.3加载模糊视图
         bgImageView.addSubview(blurView)
- 
+        
         //
         tvTableView.dataSource = self
         tvTableView.delegate = self
         tvTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-       
+        
         
         //清除背景颜色
         tvTableView.backgroundColor = UIColor.clearColor()
@@ -135,31 +137,31 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
         eHttp.onSearch("https://douban.fm/j/mine/playlist?type=n&channel=4&from=mainsite")
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.playFinished), name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
-
+        
     }
     
-   func playFinished(){
-       if autoPalyStop {
-        
+    @objc func playFinished(){
+        if autoPalyStop {
+            
             switch playModeBtn.order {
             case 1:
                 //顺序播放
                 currentIndex += 1
                 if currentIndex > dataSong.count-1 {
-                   currentIndex = 0
+                    currentIndex = 0
                 }
-                 tableView(tvTableView, didSelectRowAtIndexPath: NSIndexPath(forRow: currentIndex, inSection: 0))
+                tableView(tvTableView, didSelectRowAtIndexPath: NSIndexPath(forRow: currentIndex, inSection: 0))
             case 2:
                 //随机播放
-              let index = arc4random_uniform(UInt32(dataSong.count-1))
-              tableView(tvTableView, didSelectRowAtIndexPath: NSIndexPath(forRow: Int(index), inSection: 0))
+                let index = arc4random_uniform(UInt32(dataSong.count-1))
+                tableView(tvTableView, didSelectRowAtIndexPath: NSIndexPath(forRow: Int(index), inSection: 0))
             case 3:
-                 //单曲循环
+                //单曲循环
                 tableView(tvTableView, didSelectRowAtIndexPath: NSIndexPath(forRow: currentIndex, inSection: 0))
             default:
                 return
             }
-       }else{
+        }else{
             autoPalyStop = true
         }
     }
@@ -214,8 +216,16 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
    
     //缓存图片
    private func getImageCache(url:String,imageView:UIImageView){
-   
+    // 从内存\沙盒缓存中获得原图，
+    let key = url
+    //保存下载的文件到沙河
+ 
+    let originalImage = SDImageCache.sharedImageCache().imageFromDiskCacheForKey(key)
+    if (originalImage != nil) { // 如果内存\沙盒缓存有原图，那么就直接显示原图
+        imageView.image = originalImage;
+    }else{
         imageView.sd_setImageWithURL(NSURL(string: url))
+    }
     }
     //
     func didRecieveResult(result: AnyObject) {
@@ -233,13 +243,14 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
         
     }
     
+    /**专场设置*/
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
       let channelCV = segue.destinationViewController as! ChannelViewController
        channelCV.channelData = self.dataChannel
        channelCV.delegate = self
         
     }
-    
+
     func getChannelId(channel_id: String) {
         //获取频道的歌曲数据
         let url = "https://douban.fm/j/mine/playlist?type=n&channel=\(channel_id)&from=mainsite"
@@ -251,6 +262,7 @@ class ViewController: UIViewController,HTTPControllerDelegate,ChannelViewDelegat
         // Dispose of any resources that can be recreated.
     }
 }
+
 
 
 extension ViewController:UITableViewDelegate,UITableViewDataSource{

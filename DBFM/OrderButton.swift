@@ -9,6 +9,7 @@
 import UIKit
 
 class OrderButton: UIButton {
+    
     var order:Int = 1
     let order1 = UIImage(named: "order1")
     let order2 = UIImage(named: "order2")
@@ -19,6 +20,7 @@ class OrderButton: UIButton {
         self.addTarget(self, action: #selector(OrderButton.selectMode), forControlEvents: UIControlEvents.TouchUpInside)
     }
     
+    /**选择的模式*/
     func selectMode() {
         order += 1
         if order == 1 {

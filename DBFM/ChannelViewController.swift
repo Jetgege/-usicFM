@@ -12,22 +12,24 @@ protocol ChannelViewDelegate{
     func getChannelId(channel_id:String)
 }
 
-class ChannelViewController: UIViewController {
+class ChannelViewController: UIViewController{
     @IBOutlet weak var channelTableView: UITableView!
 
     var delegate:ChannelViewDelegate?
+    
     var channelData = [NSDictionary]();
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-      setUP()
+        setUP()
     }
 
     func setUP(){
         //１.设置channelTableView的数据源和代理
         channelTableView.dataSource = self
         channelTableView.delegate = self
-        
+        //2.设置view透明度
         view.alpha = 0.8
        
     }
@@ -37,6 +39,7 @@ class ChannelViewController: UIViewController {
     }
 
 }
+
 extension ChannelViewController:UITableViewDataSource,UITableViewDelegate{
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -56,6 +59,7 @@ extension ChannelViewController:UITableViewDataSource,UITableViewDelegate{
         delegate!.getChannelId(String(channelId))
         dismissViewControllerAnimated(true, completion: nil)
     }
+    
     //动画效果
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         cell.layer.transform = CATransform3DMakeScale(0.1, 0.1, 1)
